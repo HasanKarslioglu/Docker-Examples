@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  mongodb:
+    image: "mongo"
+    volumes:
+      - C:/Users/Hasan/Desktop/Docker/goals-app-data:/data/db
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./env/mongo.env
+  backend:
+    build: ./backend
+    ports:
+      - "4900:80"
+    volumes:
+      - logs:/app/logs
+      - ./backend:/app
+      - /app/node_modules
+    env_file:
+      - ./env/backend.env
+    depends_on:
+      - mongodb
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src
+    depends_on:
+      - backend
+volumes:
+  logs:
